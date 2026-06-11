@@ -1,0 +1,118 @@
+<%- include('partials/header') %>
+
+<style>
+    /* 1. Macro Layout: Aligns the whole page */
+    .page-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2.5em 1.25em;
+        min-height: 80vh;
+        font-size: 16px; 
+    }
+
+    /* 2. Card Placement & Sizing */
+    .auth-card-container {
+        position: relative;
+        width: 100%;
+        max-width: 23.75em; /* 380px */
+        margin-bottom: 3em;
+        perspective: 1000px; /* Required for 3D physics */
+    }
+
+    .auth-card-layout {
+        width: 100%;
+        padding: 2.5em 1.875em;
+        border-radius: 1.25em;
+        text-align: center;
+        position: relative;
+        overflow: visible;
+        /* Custom hover translation for this specific layout */
+        transition: transform 0.4s ease; 
+    }
+    .auth-card-layout:hover { transform: translateY(-0.625em); }
+    .auth-card-layout.submitting { transform: translateY(-1em); }
+
+    /* 3. Internal Form Alignment */
+    .auth-title { font-size: 1.6em; margin-bottom: 1.5em; letter-spacing: -0.03em; }
+    
+    .input-layout {
+        width: 100%;
+        padding: 0.875em;
+        border-radius: 0.5em;
+        margin-bottom: 0.9em;
+        font-size: 0.85em;
+    }
+
+    .button-layout-zone {
+        position: relative;
+        width: 100%; 
+        padding: 1.25em; 
+        margin: -0.3em auto;
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+        z-index: 4;
+    }
+
+    .submit-btn-layout {
+        width: 100%;
+        max-width: 17.5em;
+        padding: 0.875em;
+        border-radius: 3.125em;
+        font-size: 1em;
+        position: relative;
+        z-index: 6;
+        transform-style: preserve-3d;
+    }
+
+    /* 4. Controls Panel Layout */
+    .diagnostics-panel {
+        width: 100%;
+        max-width: 40.625em;
+        padding: 1.875em;
+        border-radius: 1.25em;
+        margin-top: 0.625em;
+    }
+    
+    .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25em; }
+    .flex-col { display: flex; flex-direction: column; }
+    .control-label { font-size: 0.8em; margin-bottom: 0.5em; display: flex; justify-content: space-between; }
+    .full-width-input { width: 100%; accent-color: #1db954; }
+    
+    @media (max-width: 600px) { .grid-2-col { grid-template-columns: 1fr; } }
+
+    /* Absolute positioning for animations */
+    .absolute-cover { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+    .shockwave-layout { position: absolute; top: 50%; left: 50%; width: 100%; max-width: 17.5em; height: 3em; border-radius: 3.125em; z-index: 1; }
+</style>
+
+<div class="page-layout">
+    
+    <div class="auth-card-container" id="cardContainer">
+        
+        <div class="theme-glass auth-card-layout" id="card">
+            
+            <svg class="absolute-cover card-wave-svg" xmlns="http://www.w3.org/2000/svg">
+                <rect class="wave-solid" width="100%" height="100%" x="0" y="0" rx="20" ry="20" pathLength="100" />
+            </svg>
+
+            <form id="loginForm" action="/login" method="POST">
+                <h2 class="auth-title">Connect Spotify</h2>
+                
+                <input type="email" name="email" class="theme-input input-layout" placeholder="lyra@cosmos.io" autocomplete="off" required>
+                <input type="password" name="password" class="theme-input input-layout" placeholder="••••••••••••" autocomplete="off" required>
+                
+                <div class="button-layout-zone" id="tiltZone">
+                    <button type="submit" class="theme-btn-primary submit-btn-layout" id="submitBtn">Enter System</button>
+                    <div class="continuous-pulse-ring shockwave-layout" id="pulseRing"></div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script src="/scripts/script.js"></script>
+
+<%- include('partials/footer') %>

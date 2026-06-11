@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Screen Local Spotify Dashboard Designer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="public/styles/main.css">
+    <style>
+    </style>
+</head>
+<body>
+    <div class="preview-canvas" id="canvas">
+        <div class="card-container" id="cardContainer">
+            <div class="glass-card" id="card">
+                
+                <svg class="card-wave-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect class="wave-solid" x="0" y="0" rx="20" ry="20" pathLength="100" />
+                </svg>
+
+                <div class="skeleton-overlay" id="skeleton">
+                    <div class="bone bone-title"></div>
+                    <div class="bone bone-field"></div>
+                    <div class="bone bone-field"></div>
+                    <div class="bone bone-btn"></div>
+                </div>
+
+                <h2>Connect Spotify</h2>
+                <input type="email" class="mock-input" placeholder="lyra@cosmos.io" autocomplete="off">
+                <input type="password" class="mock-input" placeholder="••••••••••••" autocomplete="off">
+                
+                <div class="tilt-wrapper" id="tiltZone">
+                    <button class="mock-btn" id="submitBtn">Enter System</button>
+                    <div class="continuous-pulse-ring" id="pulseRing"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-panel">
+        <h3>System Diagnostics</h3>
+        
+        <button class="btn-action" onclick="toggleSkeleton()">Simulate Data Load (Skeleton)</button>
+        
+        <div class="control-grid">
+            <div class="control-group">
+                <label>Grid Opacity <span id="opacityGridVal">0.5</span></label>
+                <input type="range" id="opacityGridSlider" min="1" max="10" value="5">
+            </div>
+            
+            <div class="control-group">
+                <label>Flicker Speed <span id="flickerSpeedVal">1.5s</span></label>
+                <input type="range" id="flickerSpeedSlider" min="3" max="40" value="15">
+            </div>
+            
+            <div class="control-group">
+                <label>Card Activation Range <span id="cardRangeVal">100px</span></label>
+                <input type="range" id="cardRangeSlider" min="10" max="300" value="100">
+            </div>
+            
+            <div class="control-group">
+                <label>Card Tilt Sensitivity <span id="cardTiltVal">12</span></label>
+                <input type="range" id="cardTiltSlider" min="1" max="30" value="12">
+            </div>
+            
+            <div class="control-group">
+                <label>Button Tilt Sensitivity <span id="btnTiltVal">15</span></label>
+                <input type="range" id="btnTiltSlider" min="5" max="35" value="15">
+            </div>
+
+            <div class="control-group">
+                <label>Wave Thickness <span id="thickVal">4px</span></label>
+                <input type="range" id="thickSlider" min="1" max="10" value="4">
+            </div>
+            
+            <div class="control-group">
+                <label>Perimeter Tracer Speed <span id="waveSpeedVal">1.5s</span></label>
+                <input type="range" id="waveSpeedSlider" min="5" max="30" value="15">
+            </div>
+            
+            <div class="control-group">
+                <label>Shockwave Speed <span id="shockSpeedVal">1.4s</span></label>
+                <input type="range" id="shockSpeedSlider" min="5" max="30" value="14">
+            </div>
+        </div>
+    </div>
+    <script src="public/scripts/script.js"></script>
+</body>
+</html>
