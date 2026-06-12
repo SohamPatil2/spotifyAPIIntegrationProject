@@ -16,6 +16,20 @@
     --shockwave-speed: 1s;
 }
 
+/* Universal Box Sizing Reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background: #050505;
+    color: #f8fafc;
+    /* FIX 1: Allow horizontal scrolling if the window gets small */
+    overflow-x: auto; 
+    /* FIX 2: Lock the minimum width to a standard desktop/tablet landscape size */
+    min-width: 1024px; 
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -125,7 +139,7 @@ body::after { background-position: 0.75rem 0.75rem; animation: gridPulseBeta cal
     align-items: flex-end; 
     gap: 0.5em;
     background: rgba(12, 12, 14, var(--glass-opacity));
-    border: none; /* Outline removed */
+    border: none;
     padding: 0.625em 1em; 
     border-radius: 50px;
     backdrop-filter: blur(var(--blur-intensity));
@@ -141,7 +155,6 @@ body::after { background-position: 0.75rem 0.75rem; animation: gridPulseBeta cal
     gap: 0.375em;
 }
 
-/* THE MAGNIFICATION SYSTEM CORES */
 .dock-item, a.dock-item:visited {
     position: relative;
     width: 2.75em;
@@ -150,35 +163,16 @@ body::after { background-position: 0.75rem 0.75rem; animation: gridPulseBeta cal
     justify-content: center;
     align-items: center;
     
-    /* Forces the grey color and overrides the purple browser default */
     color: #b3b3b3; 
-    
     border-radius: 50%;
     text-decoration: none;
     transform-style: preserve-3d;
     will-change: transform, width, height;
+    
+    /* FIX: Removed 'transform' from this list so the JS engine can control it */
     transition: color 0.3s ease, background 0.3s ease, 
                 width 0.35s cubic-bezier(0.25, 1, 0.5, 1), 
                 height 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* 1. Primary Focus Target: Max growth multiplier */
-.dock-panel:hover .dock-item:hover {    
-    color: #1ed760;
-    width: 4.25em;
-    height: 4.25em;
-}
-
-/* 2. Immediate Sibling Magnification (Right Element) */
-.dock-panel:hover .dock-item:hover + .dock-item {
-    width: 3.5em;
-    height: 3.5em;
-}
-
-/* 3. Immediate Sibling Magnification (Left Element) */
-.dock-item:has(+ .dock-item:hover) {
-    width: 3.5em;
-    height: 3.5em;
 }
 
 .dock-icon {
@@ -199,7 +193,7 @@ body::after { background-position: 0.75rem 0.75rem; animation: gridPulseBeta cal
 /* Dynamic Tooltip Alignment Offset Rules */
 .dock-tooltip {
     position: absolute;
-    top: calc(100% + 1em); /* Clears the dock border */
+    top: calc(100% + 1em); 
     left: 50%;
     transform: translateX(-50%) translateY(10px);
     background: #0c0c0e;
@@ -217,7 +211,41 @@ body::after { background-position: 0.75rem 0.75rem; animation: gridPulseBeta cal
     z-index: 50;
 }
 
-.dock-item:hover .dock-tooltip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
+/* ==========================================================================
+   DOCK INTERACTION PHYSICS (MOBILE SAFE)
+   ========================================================================== */
+
+/* 1. LOCK HOVER EFFECTS TO MOUSE-DEVICES ONLY */
+@media (hover: hover) and (pointer: fine) {
+    
+    /* Primary Focus Target: Max growth multiplier */
+    .dock-panel:hover .dock-item:hover {    
+        color: #1ed760;
+        width: 4.25em;
+        height: 4.25em;
+    }
+
+    /* Immediate Sibling Magnification (Right Element) */
+    .dock-panel:hover .dock-item:hover + .dock-item {
+        width: 3.5em;
+        height: 3.5em;
+    }
+
+    /* Immediate Sibling Magnification (Left Element) */
+    .dock-item:has(+ .dock-item:hover) {
+        width: 3.5em;
+        height: 3.5em;
+    }
+
+    /* Tooltip Reveal */
+    .dock-item:hover .dock-tooltip {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* 2. ADD A TOUCH-ACTIVE STATE FOR MOBILE TAPS */
+.dock-item:active {
+    transform: scale(0.92); /* Satisfying physical "press" inward */
+    color: #1ed760; /* Lights up green instantly on tap */
 }

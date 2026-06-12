@@ -6,5 +6,5 @@
 
 ## Frameworks Used
 
-- HTML CSS for frontend
-- Express, Axios for backend
+- HTML CSS and Javascript for frontend
+- Express, Axios and EJS for backend

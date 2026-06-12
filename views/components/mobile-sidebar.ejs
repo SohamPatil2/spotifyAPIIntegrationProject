@@ -1,0 +1,24 @@
+<link rel="stylesheet" href="/styles/components/mobile-sidebar.css">
+
+<div class="mobile-player-sidebar" id="mobilePlayerSidebar">
+    <div class="msb-content-panel">
+        
+        <div class="msb-header">
+            <h2 class="msb-title">Now Playing</h2>
+            <button class="msb-close-btn" id="closeSidebarBtn">
+                <img src="https://img.icons8.com/fluency-systems-filled/96/cancel.png" alt="Close">
+            </button>
+        </div>
+        
+        <div class="msb-now-playing-zone">
+            <%- include('now-playing') %>
+        </div>
+
+        <div class="msb-playlist-zone">
+            <div style="background: rgba(255,255,255,0.03); border-radius: 1em; padding: 1.5em; text-align: center; color: var(--system-grey); margin-top: 1em;">
+                Up Next: Playlist content will map here.
+            </div>
+        </div>
+
+    </div>
+</div>

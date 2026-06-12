@@ -1,0 +1,126 @@
+:root {
+    --player-glass: rgba(12, 12, 14, 0.65);
+    --player-border: rgba(255, 255, 255, 0.06);
+    --system-grey: #b3b3b3;
+    --np-title-font-size: 1.15em; /* Slightly smaller than previous default */
+}
+
+.now-playing-panel {
+    background: var(--player-glass);
+    border: 1px solid var(--player-border);
+    border-radius: 1.5em;
+    padding: 1em; 
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 1em 2.5em rgba(0, 0, 0, 0.5);
+    
+    display: flex;
+    flex-direction: column;
+    gap: 1em; 
+    
+    /* THE SAFETY NET */
+    width: 100%; 
+    max-width: 420px; /* Forces it to stop growing, even if the grid fails */
+    box-sizing: border-box; /* Prevents padding from adding to the total width */
+    
+    will-change: transform;
+    transform: perspective(1000px);
+}
+
+.now-playing-panel:hover {
+    box-shadow: 0 1.5em 3.5em rgba(0, 0, 0, 0.6);
+}
+
+.np-artwork-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1; 
+    border-radius: 0.75em;
+    overflow: hidden;
+    box-shadow: 0 0.5em 1.5em rgba(0,0,0,0.4);
+}
+
+.np-artwork {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    transition: transform 0.4s ease;
+}
+
+.np-artwork:hover {
+    transform: scale(1.03);
+}
+
+/* Metadata Containers */
+.np-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em; /* Slightly reduced gap */
+    text-align: left;
+    /* Important for tooltips on mobile sidebar */
+    overflow: visible;
+}
+
+/* ==========================================================================
+   FADING & MARQUEE TEXT EFFECTS (Song, Album, Artist)
+   ========================================================================== */
+.fading-text-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    
+    /* The Fading Mask: Creates soft transparent edges at start and end */
+    -webkit-mask-image: linear-gradient(
+        to right,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,1) 5%,  /* Fade in */
+        rgba(0,0,0,1) 95%, /* Fade out */
+        rgba(0,0,0,0) 100%
+    );
+    mask-image: linear-gradient(
+        to right,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,1) 5%,
+        rgba(0,0,0,1) 95%,
+        rgba(0,0,0,0) 100%
+    );
+}
+
+/* Define the movement logic via JS-activated class */
+.marquee-active .marquee-target {
+    display: inline-block;
+    padding-left: 10px; /* Buffer for start fade */
+    will-change: transform;
+    /* JS sets animation duration based on width */
+    animation: textMarquee linear infinite;
+}
+
+/* Cyclic Shift Keyframes */
+@keyframes textMarquee {
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Combined Title + Album Styles */
+.np-title {
+    color: #ffffff;
+    font-size: var(--np-title-font-size);
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.np-album-inline {
+    color: var(--system-grey);
+    font-size: 0.8em; /* Slightly smaller relative to title */
+    font-weight: 400;
+    margin-left: 0.2em; /* Spacing for the bold dot */
+}
+
+/* Artist Styles */
+.np-artist {
+    color: var(--system-grey);
+    font-size: 0.9em; /* Reduced from 0.95em */
+    font-weight: 600;
+    margin: 0;
+}

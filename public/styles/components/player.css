@@ -1,0 +1,314 @@
+/* ==========================================================================
+   GLASSMORPHIC AUDIO MASTER INTERFACE DOCK (DYNAMIC FISH-EYE EXECUTION)
+   ========================================================================== */
+
+:root {
+    --player-glass: rgba(12, 12, 14, 0.65);
+    --player-border: rgba(255, 255, 255, 0.06);
+    --system-green: #1ed760;
+    --system-grey: #b3b3b3;
+    
+    /* System Matrix Filters to override remote static black icons */
+    --filter-nocturnal-grey: invert(78%) sepia(4%) saturate(23%) hue-rotate(352deg) brightness(89%) contrast(88%);
+    --filter-system-green: invert(61%) sepia(80%) saturate(542%) hue-rotate(93deg) brightness(98%) contrast(91%);
+}
+
+/* REPLACE .player-panel AND ADD NEW LAYOUT RULES */
+.player-panel {
+    display: flex;
+    flex-direction: column; /* Stacks the progress bar on top of the controls */
+    gap: 0.875em;
+    background: var(--player-glass);
+    border: 1px solid var(--player-border);
+    padding: 1.25em 2em;
+    border-radius: 2em; /* Pill shape when expanded */
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 1.5em 3.5em rgba(0, 0, 0, 0.6);
+    
+    /* Strict dimensions to allow fluid CSS transition scaling */
+    width: 38em; 
+    height: 7em;
+    overflow: visible;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: width, height, border-radius;
+}
+
+.player-controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* ==========================================================================
+   COLLAPSED STATE PHYSICS
+   ========================================================================== */
+   /* Update this exact block in player.css */
+   .player-panel.state-collapsed {
+       width: 4.5em;
+       height: 4.5em;
+       border-radius: 50%; 
+       padding: 0;
+       gap: 0;
+       
+       /* THE FIX: Prevents the circle from squishing into an oval */
+       flex-shrink: 0; 
+       aspect-ratio: 1 / 1; 
+   }
+
+.fade-on-collapse {
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.state-collapsed .fade-on-collapse {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute; /* Rips them out of the layout flow so the circle shrinks tightly */
+    visibility: hidden;
+    transform: scale(0.8);
+}
+
+/* Keep the play button dead center when it shrinks */
+.state-collapsed .player-controls-row { height: 100%; }
+.state-collapsed .zone-center { gap: 0; height: 100%; width: 100%; justify-content: center; }
+
+/* ==========================================================================
+   TRACK PROGRESSION & DYNAMIC SLIDERS
+   ========================================================================== */
+.track-progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1em;
+}
+
+.time-label {
+    font-size: 0.75em;
+    color: var(--system-grey);
+    font-variant-numeric: tabular-nums; /* Keeps numbers from jumping horizontally */
+    min-width: 35px;
+}
+
+/* THE FILLED SLIDER TRICK:
+   Uses a linear-gradient that stops exactly at the percentage tracked by JS
+*/
+.system-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    /* This gradient fills the left side with green, and leaves the right side translucent */
+    background: linear-gradient(to right, var(--system-green) var(--val, 0%), rgba(255, 255, 255, 0.15) var(--val, 0%));
+    outline: none;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.system-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease;
+}
+
+.system-slider:hover::-webkit-slider-thumb {
+    transform: scale(1.3);
+}
+
+/* Override the slider track height exclusively for the volume bar to make it match */
+.volume-slider-wrapper { width: 0px; opacity: 0; overflow: hidden; display: flex; align-items: center; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; }
+.zone-right:hover .volume-slider-wrapper, .volume-slider-wrapper:focus-within { width: 90px; opacity: 1; margin-left: 0.5em; }
+
+/* Keep everything else below this exactly the same (Zones, tooltips, buttons, etc) */
+
+/* ZONE BOUNDARY MAPS */
+.player-zone {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.zone-center {
+    gap: 0.375em;
+}
+
+/* UNIFORM CONTROL BOUNDING COMPONENT */
+.player-item {
+    position: relative;
+    width: 3em;
+    height: 3em;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    transform-style: preserve-3d;
+    will-change: transform, width, height;
+    transition: width 0.35s cubic-bezier(0.25, 1, 0.5, 1),
+                height 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.player-icon {
+    width: 55%;
+    height: 55%;
+    object-fit: contain;
+    pointer-events: none;
+    filter: var(--filter-nocturnal-grey);
+    transition: filter 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ACTIVE STATE GLOW SYSTEM FOR TOGGLE LOCKS */
+.player-item.active-state .player-icon {
+    filter: var(--filter-system-green);
+    drop-shadow: 0 0 8px rgba(30, 215, 96, 0.4);
+}
+
+/* EXTENDED STATE CONTROLS */
+.hidden-state {
+    display: none !important;
+}
+
+.player-separator {
+    width: 1px;
+    height: 1.75em;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 0 0.5em;
+}
+
+/* DYNAMIC QUANTUM VOLUME TRACK SLIDER */
+.volume-slider-wrapper {
+    width: 0px;
+    opacity: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    will-change: width, opacity;
+}
+
+/* Expand volume slider context container when hovering over right zone */
+.zone-right:hover .volume-slider-wrapper,
+.volume-slider-wrapper:focus-within {
+    width: 90px;
+    opacity: 1;
+    margin-left: 0.5em;
+}
+
+.system-volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.15);
+    outline: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.system-volume-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+}
+
+.system-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    margin-top: -4px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.system-volume-slider:hover::-webkit-slider-thumb {
+    background: var(--system-green);
+    transform: scale(1.2);
+}
+
+/* DELAYED SYSTEM TOOLTIPS (FLOATING FROM BENEATH) */
+.player-tooltip {
+    position: absolute;
+    top: calc(100% + 0.75em);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: #0c0c0e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f8fafc;
+    font-size: 0.725em;
+    font-weight: 600;
+    padding: 0.35em 0.75em;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 100;
+}
+/* 1. LOCK HOVER EFFECTS TO MOUSE-DEVICES ONLY */
+/* 3. MOBILE RESPONSIVE SCALING */
+@media (max-width: 600px) {
+    .player-panel {
+        font-size: 11px; 
+        width: 95vw;     
+        padding: 1em 1.5em;
+        height: auto;    
+        min-height: 7em;
+    }
+
+    /* 1. Anchor the Right Zone so the popup knows where to attach */
+    .zone-right {
+        position: relative; 
+    }
+
+    /* 2. Override the horizontal wrapper to become a vertical glass floating pill */
+    .volume-slider-wrapper {
+        position: absolute;
+        bottom: calc(100% + 1em); /* Pop up directly above the volume icon */
+        right: -0.5em;            
+        width: 3.5em !important;  /* Fixed pill thickness */
+        height: 0px !important;   /* Start collapsed */
+        margin-left: 0;
+        background: var(--player-glass);
+        border: 1px solid var(--player-border);
+        border-radius: 3em;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        box-shadow: 0 1em 2em rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+
+    /* 3. Mobile Trigger State (Expands height instead of width) */
+    .volume-toggle:focus + .volume-slider-wrapper,
+    .volume-slider-wrapper:focus-within,
+    .volume-slider-wrapper:active {
+        height: 120px !important; /* The vertical height of the popup */
+        opacity: 1;
+    }
+
+    /* 4. Rotate the HTML range input to point upwards */
+    .volume-slider-wrapper .system-slider {
+        width: 90px; /* Because it is rotated, this width dictates the visual height */
+        transform: rotate(-90deg);
+    }
+}

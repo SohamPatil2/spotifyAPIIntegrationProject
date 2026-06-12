@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="/styles/components/player.css">
+
+<div class="player-panel interactive-tilt state-collapsed" id="playerPanel">
+    <div class="track-progress-container fade-on-collapse">
+        <span class="time-label" id="currentTime">0:00</span>
+        <input type="range" id="trackSlider" min="0" max="100" value="0" class="system-slider" style="--val: 0%;">
+        <span class="time-label" id="totalTime">3:45</span>
+    </div>
+
+    <div class="player-controls-row">
+        <div class="player-zone zone-left fade-on-collapse">
+            <button type="button" class="player-item toggle-btn" id="likeBtn">
+                <img src="https://img.icons8.com/android/96/hearts.png" alt="Like" class="player-icon">
+            </button>
+        </div>
+
+        <div class="player-separator fade-on-collapse"></div>
+
+        <div class="player-zone zone-center">
+            <button type="button" class="player-item toggle-btn fade-on-collapse" id="shuffleBtn">
+                <img src="https://img.icons8.com/material-rounded/100/shuffle.png" alt="Shuffle" class="player-icon">
+            </button>
+            <button type="button" class="player-item navigation-btn fade-on-collapse" id="prevBtn">
+                <img src="https://img.icons8.com/material-rounded/96/skip-to-start.png" alt="Previous" class="player-icon">
+            </button>
+
+            <button type="button" class="player-item state-action-btn" id="playPauseBtn" data-state="paused">
+                <img src="https://img.icons8.com/fluency-systems-filled/48/play.png" alt="Play" class="player-icon icon-play">
+                <img src="https://img.icons8.com/fluency-systems-filled/96/pause.png" alt="Pause" class="player-icon icon-pause hidden-state">
+            </button>
+
+            <button type="button" class="player-item navigation-btn fade-on-collapse" id="nextBtn">
+                <img src="https://img.icons8.com/material-rounded/50/end.png" alt="Next" class="player-icon">
+            </button>
+            <button type="button" class="player-item toggle-btn fade-on-collapse" id="repeatBtn">
+                <img src="https://img.icons8.com/material-rounded/96/repeat.png" alt="Repeat" class="player-icon">
+            </button>
+        </div>
+
+        <div class="player-separator fade-on-collapse"></div>
+
+        <div class="player-zone zone-right fade-on-collapse">
+            <button type="button" class="player-item volume-toggle" id="volumeMuteBtn">
+                <img src="https://img.icons8.com/sf-black-filled/64/sound-speaker.png" alt="Mute" class="player-icon icon-vol-null hidden-state">
+                <img src="https://img.icons8.com/sf-black-filled/64/low-volume.png" alt="Low" class="player-icon icon-vol-low hidden-state">
+                <img src="https://img.icons8.com/sf-black-filled/64/medium-volume.png" alt="Med" class="player-icon icon-vol-med">
+                <img src="https://img.icons8.com/sf-black-filled/64/high-volume.png" alt="High" class="player-icon icon-vol-high hidden-state">
+            </button>
+            <div class="volume-slider-wrapper">
+                <input type="range" id="volumeSlider" min="0" max="100" value="60" class="system-slider" style="--val: 60%;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/scripts/components/player.js"></script>
